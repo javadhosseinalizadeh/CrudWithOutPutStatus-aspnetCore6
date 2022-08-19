@@ -1,0 +1,37 @@
+﻿@model ActivityType
+
+<form asp-action="Create" asp-controller="Home" method="post">
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label">Name</label>
+        <input type="text" class="form-control" asp-for="Name">
+    </div>
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label">Code</label>
+        <input type="number" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" asp-for="Code">
+        <div id="emailHelp" class="form-text">Code most be a number</div>
+    </div>
+    <div class="mb-3">
+        <input type="datetime" class="form-control" asp-for="CreatedTime" hidden>
+    </div>
+    <div class="form-group row p-3">
+        <div class="col-4">
+            <label asp-for="IsActive"></label>
+        </div>
+        <div>
+            <label>
+                <input asp-for="IsActive" type="checkbox" onchange="Check(this)" />  Active / DeActive
+            </label>
+            <p id="IsActive"></p>
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+<script>
+    function Check(value) {
+        document.getElementById('IsActive').innerHTML = value.checked;
+    };
+</script>
