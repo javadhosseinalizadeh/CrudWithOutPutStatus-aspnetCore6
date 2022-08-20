@@ -1,4 +1,5 @@
-﻿using Javad.Alizadeh.Models;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Javad.Alizadeh.Models;
 using Javad.Alizadeh.Models.Entities;
 using Javad.Alizadeh.Models.Repositories;
 using Javad.Alizadeh.Models.Services;
@@ -13,11 +14,14 @@ namespace Javad.Alizadeh.Controllers
     {
         private readonly IActivityRepostory _activityRepostory;
         private readonly IActivityService _activityService;
+        private readonly INotyfService _notyf;
 
-        public HomeController(IActivityRepostory activityRepostory, IActivityService activityService)
+
+        public HomeController(IActivityRepostory activityRepostory, IActivityService activityService, INotyfService notyfService)
         {
             _activityRepostory = activityRepostory;
             _activityService = activityService;
+            _notyf = notyfService;
         }
 
         protected IActionResult MyResult(int statusCode, OutPutResualt result)
@@ -50,32 +54,35 @@ namespace Javad.Alizadeh.Controllers
             {
                 return View(type);
             }
-            //   _activityRepostory.Create(type);
 
-           var createResualt = _activityService.Create(type);
+            var createResualt = _activityService.Create(type);
 
-            //return RedirectToAction("AppActivity");
-            try
+            MyResult(200, new OutPutResualt
             {
-                return MyResult(200, new OutPutResualt
-                {
-                    Status = createResualt.Status,
-                    Messages = createResualt.Messages,
-                    Output = type
-                });
-            }
-            catch (Exception ex)
+                Status = createResualt.Status,
+                Messages = createResualt.Messages,
+                Output = type,
+            });
+
+            string message = string.Join(" ", createResualt.Messages);
+
+            if (createResualt.Status == 1)
             {
-
-                return MyResult(400, new OutPutResualt
-                {
-                    Status = createResualt.Status,
-                    Messages =new List<string>() { ex.Message },
-                    Output = type
-                });
+                _notyf.Error("Wrong input!", 5);
+                _notyf.Error(message, 5);
+                _notyf.Error("Your name and code most be unique", 8);
+                _notyf.Error("Code most be between 100 and 10 million!", 8);
+                return RedirectToAction("Create", createResualt.Messages);
             }
-         
-
+            else
+            {
+                _notyf.Success("Create was succsessful", 3);
+                return RedirectToAction("AppActivity");
+            }
+        }
+        public IActionResult ProceedCreate()
+        {
+            return View();
         }
         [HttpGet]
         public IActionResult Update(int id)
@@ -91,8 +98,9 @@ namespace Javad.Alizadeh.Controllers
                 return View(type);
             }
             _activityRepostory.Update(type);
-            return RedirectToAction("AppActivity");
+            return RedirectToAction("AppActivity");           
         }
+
         [HttpGet]
         public IActionResult Delete(int id)
         {

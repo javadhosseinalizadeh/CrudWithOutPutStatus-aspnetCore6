@@ -25,9 +25,6 @@ namespace Javad.Alizadeh.Models.Repositories
             _context.Remove(activityType);
             _context.SaveChanges();
         }
-
-
-
         public ActivityType Get(int id)
         {
             var result = _context.ActivityTypes.Where(a => a.Id == id).SingleOrDefault();

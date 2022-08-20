@@ -14,15 +14,7 @@ namespace Javad.Alizadeh.Models.Services
             var output = new OutPutResualt();
             if (code < 100 || code > 10000000)
             {
-                output.Messages.Add("Code most be between 100 and 10000000");
-                output.Status = 1;
-            }
-
-            var record = _activityRepostory.Get(id, code);
-
-            if (record != null)
-            {
-                output.Messages.Add("Code is already exists");
+                output.Messages.Add("Invalid code input!");
                 output.Status = 1;
             }
             else
